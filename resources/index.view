@@ -1,0 +1,5 @@
+<svg>
+  <rect id="background" />
+  <text id="myLabel" class="defaultText"/>
+  <text id="mySensor" class="defaultText" font-size="30" y="30%"/>
+</svg>
