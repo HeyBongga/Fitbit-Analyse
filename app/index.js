@@ -26,7 +26,7 @@ clock.ontick = (evt) => {
     // 12h format
     hours = hours % 12 || 12;
   } else {
-    // 24h format
+    // 24h formate
     hours = zeroPad(hours);
   }
   let mins = zeroPad(today.getMinutes());
