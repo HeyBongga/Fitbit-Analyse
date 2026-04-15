@@ -1,11 +1,13 @@
 import { BodyPresenceSensor } from "body-presence";
 import { logPrototypeChain } from "../debug/prototype";
 
+const bodysensor = new BodyPresenceSensor();
+
 // Initialize the body presence sensor and update the label element based on the sensor's readings
 export function initBodyPresence(labelElement) {
+  
   console.log("Started");
-  // Create a new instance of the BodyPresenceSensor  
-  const bodysensor = new BodyPresenceSensor();
+  // Create a new instance of the BodyPresenceSensor
 
   console.log("before event listener:", bodysensor);
   //logPrototypeChain(bodysensor);
