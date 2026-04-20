@@ -1,5 +1,7 @@
 <svg>
   <rect id="background" />
-  <text id="clockLabel" class="defaultText"/>
-  <text id="bodyPresenceLabel" class="defaultText" font-size="30" y="30%"/>
+  <text id="clockLabel" class="clockText"/>
+  <text id="bodyPresenceLabel" class="defaultText" y="30%"/>
+  <text id="heartRateLabel" class="defaultText" y="40%"/>
+  <text id="accelerometerLabel" class="defaultText" y="50%"/>
 </svg>
