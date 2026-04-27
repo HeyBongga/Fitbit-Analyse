@@ -13,7 +13,8 @@ export function initHeartRate(labelElement) {
   bodySensor.addEventListener("reading", () => {
     if (!bodySensor.present) {
       hrm.stop();
-      labelElement.text = "Heart Rate: --" // @ ${formatTime(timeStamp)}`;
+      labelElement.value.text = "Heart Rate: --" 
+      labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
     } else {
       hrm.start();
     }
@@ -21,10 +22,10 @@ export function initHeartRate(labelElement) {
 
   bodySensor.start();
 
-  console.log("formatTime type:", typeof formatTime);
   // Herzrate + timestamp anzeigen
   hrm.addEventListener("reading", () => {
     const timeStamp = Date.now();
-    labelElement.text = `Heart Rate: ${hrm.heartRate} @ ${formatTime(timeStamp)}`;
+    labelElement.value.text = `Heart Rate: ${hrm.heartRate}`;
+    labelElement.timestamp.text = `@ ${formatTime(timeStamp)}`;
   });
 }
