@@ -1,11 +1,13 @@
 import { Gyroscope } from "gyroscope";
 import { formatTime } from "../utils/format";
 
+const gyro = new Gyroscope({ frequency: 1 });
+
 export function initGyroscope(labelElement) {
     if (Gyroscope) {
         console.log("This device has an Gyroscope!");
 
-        const gyro = new Gyroscope({ frequency: 1 });
+        
 
         labelElement.value.text = "GYRO: x: NaN, y: NaN, z: NaN";
         labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;

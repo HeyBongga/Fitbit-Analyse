@@ -1,4 +1,5 @@
 import * as document from "document";
+import * as messaging from "messaging";
 import { initClock } from "./clock";
 import { initBodyPresence } from "./sensors/bodypresence";
 import { initHeartRate } from "./sensors/heartrate";
@@ -9,12 +10,13 @@ import { initActivity } from "./metrics/excercise";
 import { initProfile } from "./system/profile";
 import { initPower } from "./system/power";
 import { initOrientation } from "./sensors/orientation";
-//import { peerSocket } from "messaging";
 
 ////////////////////////////////////////////////////////////////////////
 // Get references to the label elements in the document
 const bg = document.getElementById("background");
 const clockLabel = document.getElementById("clockLabel");
+const toggleBtn = document.getElementById("toggleBtn");
+const toggleBtnText = document.getElementById("toggleBtnText");
 
 const bodyPresenceLabel = document.getElementById("bodyPresenceLabel");
 
@@ -50,8 +52,9 @@ initActivity({value: activityLabel1,timestamp: activityLabel2});
 initProfile({value: profileLabel,timestamp: null});
 initPower();
 /////////////////////////////////////////////////////////////////////////
+const datenLogger = new DatenLogger();
 
-
+datenLogger.a
 /////////////////////////////////////////////////////////////////////////
 //PAGES
 let currentPage = 0;
@@ -79,4 +82,23 @@ bg.addEventListener("click", () => {
   console.log("CLICK!");
   currentPage = (currentPage + 1) % totalPages;
   showPage(currentPage);
+});
+
+/////////////////////////////////////////////////////////////////////////
+// Messung Start/Stop
+let isRecording = false;
+
+toggleBtn.addEventListener("click", () => {
+  isRecording = !isRecording;
+  toggleBtnText.text = isRecording ? "STOP" : "START";
+  
+  // Sende Status an Companion
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    messaging.peerSocket.send({
+      type: "measurement",
+      action: isRecording ? "start" : "stop",
+      timestamp: new Date().toISOString()
+    });
+    console.log(isRecording ? "Messung gestartet" : "Messung gestoppt");
+  }
 });

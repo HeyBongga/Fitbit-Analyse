@@ -30,7 +30,8 @@
 
   <!-- Seite 2: Messungen -->
   <g id="page2" visibility="hidden" pointer-events="none">
-    <text id="toggleBtn" x="50%" y="80%" text-anchor="middle" text="START" />
+    <rect id="toggleBtn" x="25%" y="70%" width="50%" height="15%" fill="lightblue" rx="5" ry="5" pointer-events="all"/>
+    <text id="toggleBtnText" x="50%" y="80%" text-anchor="middle" text-length="20" class="defaultText">START</text>
   </g>
 </svg>
 
