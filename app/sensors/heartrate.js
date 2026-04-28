@@ -1,6 +1,7 @@
 import { HeartRateSensor } from "heart-rate";
 import { BodyPresenceSensor } from "body-presence";
 import { formatTime } from "../utils/format";
+import { sendData, flush } from "../utils/datasender";
 
 const hrm = new HeartRateSensor({ frequency: 1 });
 
@@ -15,6 +16,8 @@ export function initHeartRate(labelElement) {
       hrm.stop();
       labelElement.value.text = "Heart Rate: --" 
       labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
+      //flush();
+
     } else {
       hrm.start();
     }
@@ -24,8 +27,13 @@ export function initHeartRate(labelElement) {
 
   // Herzrate + timestamp anzeigen
   hrm.addEventListener("reading", () => {
-    const timeStamp = Date.now();
     labelElement.value.text = `Heart Rate: ${hrm.heartRate}`;
-    labelElement.timestamp.text = `@ ${formatTime(timeStamp)}`;
+    labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
+
+    // sendData({
+    //   sensor: "hr",
+    //   timestamp: timestamp,
+    //   heartRate: hrm.heartRate
+    // });
   });
-}
+  }

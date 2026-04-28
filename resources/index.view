@@ -1,7 +1,38 @@
 <svg>
-  <rect id="background" />
+  <rect id="background" width="100%" height="100%" pointer-events="all"/>
   <text id="clockLabel" class="clockText"/>
-  <text id="bodyPresenceLabel" class="defaultText" y="30%"/>
-  <text id="heartRateLabel" class="defaultText" y="40%"/>
-  <text id="accelerometerLabel" class="defaultText" y="50%"/>
+  <!-- Seite 0: Uhr -->
+  <g id="page0" pointer-events="none">
+    <text id="bodyPresenceLabel" class="defaultText" y="25%"/>
+    <text id="hrLabel1" class="defaultText" y="30%"/>
+    <text id="hrLabel2" class="defaultText" y="35%"/>
+
+    <text id="accLabel1" class="defaultText" y="45%"/>
+    <text id="accLabel2" class="defaultText" y="50%"/>
+
+    <text id="gyroLabel1" class="defaultText" y="60%"/>
+    <text id="gyroLabel2" class="defaultText" y="65%"/>
+
+    <text id="orientationLabel1" class="defaultText" y="75%"/>
+    <text id="orientationLabel2" class="defaultText" y="80%"/>
+  </g>
+
+  <!-- Seite 1: Sensoren -->
+  <g id="page1" visibility="hidden" pointer-events="none">
+    <text id="activityLabel1" class="defaultText" y="30%"/>
+    <text id="activityLabel2" class="defaultText" y="35%"/>
+
+    <text id="sleepLabel1" class="defaultText" y="45%"/>
+    <text id="sleepLabel2" class="defaultText" y="50%"/>
+
+    <text id="profileLabel" class="defaultText" y="60%"/>
+  </g>
+
+  <!-- Seite 2: Messungen -->
+  <g id="page2" visibility="hidden" pointer-events="none">
+    <text id="toggleBtn" x="50%" y="80%" text-anchor="middle" text="START" />
+  </g>
 </svg>
+
+
+  

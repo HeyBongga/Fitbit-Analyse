@@ -5,7 +5,7 @@ export function initProfile(labelElement) {
    labelElement.value.text = "PROFILE: loading...";
 
 if (appbit.permissions.granted("access_user_profile")) {
-   console.log((user.restingHeartRate || "Unknown") + " BPM");
-   labelElement.value.text = `PROFILE:\nAge: ${user.age}\nGender: ${user.gender}\nResting HR: ${user.restingHeartRate || "Unknown"} BPM`;
+   //console.log((user.restingHeartRate || "Unknown") + " BPM");
+   labelElement.value.text = `PROFILE: Age: ${user.age} Sex: ${user.gender} RHR: ${user.restingHeartRate || "Unknown"} BPM`;
 }
-}
+};

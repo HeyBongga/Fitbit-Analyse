@@ -22,7 +22,7 @@ export function initActivity(labelElement) {
     const azm = today.adjusted.activeZoneMinutes?.total || 0;
     
 
-    console.log(today.adjusted.steps);
+    //console.log(today.adjusted.steps);
     labelElement.value.text =
       `ACT: Steps: ${steps} Dist: ${distance} Cal: ${calories}`;
 
