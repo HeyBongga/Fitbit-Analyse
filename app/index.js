@@ -1,15 +1,16 @@
 import * as document from "document";
 import * as messaging from "messaging";
-import { initClock } from "./clock";
-import { initBodyPresence } from "./sensors/bodypresence";
-import { initHeartRate } from "./sensors/heartrate";
-import { initAccelerometer } from "./sensors/accelerometer";
-import { initGyroscope } from "./sensors/Gyroscope";    
+import { Clock } from "./clock";
+import { initBodyPresence, bodyPresenceSensor } from "./sensors/bodypresence";
+import { initHeartRate, heartRateSensor } from "./sensors/heartrate";
+import { initAccelerometer, accelerometerSensor } from "./sensors/accelerometer";
+import { initGyroscope, gyroscopeSensor } from "./sensors/Gyroscope";    
 import { initSleep } from "./metrics/sleep";
 import { initActivity } from "./metrics/excercise";
 import { initProfile } from "./system/profile";
 import { initPower } from "./system/power";
-import { initOrientation } from "./sensors/orientation";
+import { initOrientation, orientationSensor } from "./sensors/orientation";
+import { datenLogger } from "./utils/logger";
 
 ////////////////////////////////////////////////////////////////////////
 // Get references to the label elements in the document
@@ -17,31 +18,31 @@ const bg = document.getElementById("background");
 const clockLabel = document.getElementById("clockLabel");
 const toggleBtn = document.getElementById("toggleBtn");
 const toggleBtnText = document.getElementById("toggleBtnText");
-
 const bodyPresenceLabel = document.getElementById("bodyPresenceLabel");
-
 const hrLabel1 = document.getElementById("hrLabel1");
 const hrLabel2 = document.getElementById("hrLabel2");
-
 const accLabel1 = document.getElementById("accLabel1");
 const accLabel2 = document.getElementById("accLabel2");
-
 const gyroLabel1 = document.getElementById("gyroLabel1");
 const gyroLabel2 = document.getElementById("gyroLabel2"); 
-
 const orientationLabel1 = document.getElementById("orientationLabel1");
 const orientationLabel2 = document.getElementById("orientationLabel2");
-
 const sleepLabel1 = document.getElementById("sleepLabel1");
 const sleepLabel2 = document.getElementById("sleepLabel2");
-
 const activityLabel1 = document.getElementById("activityLabel1");
 const activityLabel2 = document.getElementById("activityLabel2");
-
 const profileLabel = document.getElementById("profileLabel");
 /////////////////////////////////////////////////////////////////////////
 // Initialize the clock and sensors with the respective label elements
-initClock(clockLabel);
+const appClock = new Clock(clockLabel, bg, toggleBtn, toggleBtnText);
+appClock.initClock();
+appClock.setPages([
+  document.getElementById("page0"),
+  document.getElementById("page1"),
+  document.getElementById("page2")
+]);
+appClock.attachEventListeners();
+//////////////////////////////////////////////////////////////////////////
 initBodyPresence(bodyPresenceLabel);
 initHeartRate({value: hrLabel1,timestamp: hrLabel2});
 initAccelerometer({value: accLabel1,timestamp: accLabel2});
@@ -52,53 +53,63 @@ initActivity({value: activityLabel1,timestamp: activityLabel2});
 initProfile({value: profileLabel,timestamp: null});
 initPower();
 /////////////////////////////////////////////////////////////////////////
-const datenLogger = new DatenLogger();
+// Registriere alle Sensoren beim Logger
+datenLogger.addSensor(bodyPresenceSensor);
+datenLogger.addSensor(accelerometerSensor);
+datenLogger.addSensor(gyroscopeSensor);
+datenLogger.addSensor(heartRateSensor);
+datenLogger.addSensor(orientationSensor);
 
-datenLogger.a
+console.log("Alle Sensoren beim Logger registriert");
 /////////////////////////////////////////////////////////////////////////
-//PAGES
-let currentPage = 0;
-const totalPages = 3;
+// Messung Start/Stop und Datenverwaltung
+let sendDataInterval = null;
 
-const pages = [
-  document.getElementById("page0"),
-  document.getElementById("page1"),
-  document.getElementById("page2")
-];
-
-// function showPage(index) {
-//   pages.forEach((p, i) => {
-//     p.visibility = (i === index) ? "visible" : "hidden";
-//   });
-// }
-function showPage(index) {
-  pages[0].style.visibility = (index === 0) ? "visible" : "hidden";
-  pages[1].style.visibility = (index === 1) ? "visible" : "hidden";
-  pages[2].style.visibility = (index === 2) ? "visible" : "hidden";
-}
-
-// Tap zum Wechseln
-bg.addEventListener("click", () => {
-  console.log("CLICK!");
-  currentPage = (currentPage + 1) % totalPages;
-  showPage(currentPage);
-});
-
-/////////////////////////////////////////////////////////////////////////
-// Messung Start/Stop
-let isRecording = false;
-
-toggleBtn.addEventListener("click", () => {
-  isRecording = !isRecording;
-  toggleBtnText.text = isRecording ? "STOP" : "START";
-  
-  // Sende Status an Companion
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send({
-      type: "measurement",
-      action: isRecording ? "start" : "stop",
-      timestamp: new Date().toISOString()
-    });
-    console.log(isRecording ? "Messung gestartet" : "Messung gestoppt");
+appClock.onRecordingChange((isRecording) => {
+  if (isRecording) {
+    // ✅ MESSUNG STARTET
+    console.log("[App] 🔴 Messung startet...");
+    datenLogger.startRecording();
+    
+    // Starte Timer: Sende Daten alle 60 Sekunden an Companion
+    sendDataInterval = setInterval(() => {
+      const dataToSend = datenLogger.sendCurrentData();
+      
+      if (dataToSend && messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+        messaging.peerSocket.send({
+          type: "measurement_data",
+          action: "data_update",
+          timestamp: dataToSend.timestamp,
+          dataCount: dataToSend.dataCount,
+          data: dataToSend.data
+        });
+        console.log(`[App] ✅ Daten versendet an Companion`);
+      }
+    }, 1000); // Alle 60 Sekunden
+    
+  } else {
+    // ⏹️ MESSUNG STOPPT
+    //console.log("[App] ⏹️ Messung stoppt...");
+    
+    // Stoppe den Timer
+    if (sendDataInterval) {
+      clearInterval(sendDataInterval);
+      sendDataInterval = null;
+    }
+    
+    // Finale Daten speichern und versenden
+    const recording = datenLogger.stopRecording();
+    
+    if (recording && messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+      messaging.peerSocket.send({
+        type: "measurement_complete",
+        action: "recording_stopped",
+        timestamp: recording.endTime,
+        dataCount: recording.dataCount,
+        data: recording.data
+      });
+      console.log(`[App] ✅ Finale Messung versendet an Companion`);
+    }
   }
 });
+/////////////////////////////////////////////////////////////////////////

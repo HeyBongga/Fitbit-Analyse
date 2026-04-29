@@ -1,20 +1,44 @@
 import { BodyPresenceSensor } from "body-presence";
 import { logPrototypeChain } from "../debug/prototype";
+import { BaseSensor } from "./BaseSensor";
 
-// Create a new instance of the BodyPresenceSensor
-const bodysensor = new BodyPresenceSensor();
+export class BodyPresenceSensorWrapper extends BaseSensor {
+  constructor() {
+    super("BodyPresence");
+    this.hardware = new BodyPresenceSensor();
+  }
 
-// Initialize the body presence sensor and update the label element based on the sensor's readings
-export function initBodyPresence(labelElement) {
-  //logPrototypeChain(bodysensor);
-  labelElement.text = "NaN";
-  // Add an event listener to the sensor to update the label element whenever a new reading is available
-  bodysensor.addEventListener("reading", () => { 
-    labelElement.text = bodysensor.present ? "Body present: Yes" : "Body present: No";
-  });
+  getValue() {
+    return {
+      sensorName: this.sensorName,
+      value: this.hardware.present ? "on-wrist" : "off-wrist",
+      timestamp: this.timestamp || new Date().toISOString()
+    };
+  }
 
-  // Start the sensor to begin receiving readings
-  bodysensor.start();
+  //Gibt alle BodyPresence-Werte als String zurück (für Debugging)
+  getValues() {
+    return `${this.sensorName}: ${this.hardware.present ? "on-wrist" : "off-wrist"} [${this.timestamp}]`;
+  }
 
-  return;
+  init(labelElement) {
+    labelElement.text = "NaN";
+
+    this.hardware.addEventListener("reading", () => {
+      this.updateValue({ value: this.hardware.present ? "on-wrist" : "off-wrist" });
+      labelElement.text = this.hardware.present ? "Body present: Yes" : "Body present: No";
+      // Emittiere Event für Logger
+      this.emit("myreading");
+    });
+
+    this.hardware.start();
+  }
 }
+
+const bodyPresenceSensor = new BodyPresenceSensorWrapper();
+
+export function initBodyPresence(labelElement) {
+  bodyPresenceSensor.init(labelElement);
+}
+
+export { bodyPresenceSensor };
