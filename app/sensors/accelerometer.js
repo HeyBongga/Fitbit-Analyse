@@ -30,7 +30,7 @@ export class AccelerometerSensor extends BaseSensor {
 
   init(labelElement) {
     if (this.isSupported) {
-      console.log("This device has an Accelerometer!");
+      //console.log("This device has an Accelerometer!");
 
       labelElement.value.text = "ACC: x: NaN, y: NaN, z: NaN";
       labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
@@ -49,7 +49,7 @@ export class AccelerometerSensor extends BaseSensor {
 
       this.hardware.start();
     } else {
-      console.log("This device does NOT have an Accelerometer!");
+      console.log("❌This device does NOT have an Accelerometer!");
       labelElement.value.text = "ACC: Not supported";
     }
   }

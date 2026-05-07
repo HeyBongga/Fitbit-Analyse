@@ -7,7 +7,7 @@ registerSettingsPage(({ settings }) => (
         </Text>
       }
     >
-      <Text>Hello world!</Text>
+      <Text>Keine Echte Anzeige des Companion!</Text>
     </Section>
   </Page>
 ));

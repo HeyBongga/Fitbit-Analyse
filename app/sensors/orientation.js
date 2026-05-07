@@ -33,7 +33,7 @@ export class OrientationSensorWrapper extends BaseSensor {
 
   init(labelElement) {
     if (this.isSupported) {
-      console.log("This device has an Orientation sensor!");
+      //console.log("This device has an Orientation sensor!");
 
       labelElement.value.text = "ORIENTATION: q0: NaN, q1: NaN, q2: NaN, q3: NaN";
       labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
@@ -64,7 +64,7 @@ export class OrientationSensorWrapper extends BaseSensor {
 
       this.hardware.start();
     } else {
-      console.log("This device does NOT have an Orientation sensor!");
+      console.log("❌This device does NOT have an Orientation sensor!");
       labelElement.value.text = "ORIENTATION: Not supported";
     }
   }

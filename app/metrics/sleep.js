@@ -7,7 +7,7 @@ if (!appbit.permissions.granted("access_sleep")) {
 import sleep from "sleep";
 
 export function initSleep(labelElement) {
-console.log("Initializing Sleep API");
+//console.log("Initializing Sleep API");
 labelElement.value.text = "SLEEP: NaN";
 if (sleep) {
   sleep.addEventListener("change", () => {

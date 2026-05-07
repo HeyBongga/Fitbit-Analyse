@@ -32,7 +32,7 @@ export class GyroscopeSensor extends BaseSensor {
 
   init(labelElement) {
     if (this.isSupported) {
-      console.log("This device has a Gyroscope!");
+      //console.log("This device has a Gyroscope!");
 
       labelElement.value.text = "GYRO: x: NaN, y: NaN, z: NaN";
       labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
@@ -50,7 +50,7 @@ export class GyroscopeSensor extends BaseSensor {
       });
       this.hardware.start();
     } else {
-      console.log("This device does NOT have a Gyroscope!");
+      console.log("❌This device does NOT have a Gyroscope!");
       labelElement.value.text = "GYRO: Not supported";
     }
   }

@@ -70,7 +70,7 @@ export class Clock {
 
   //Wechselt zur nächsten Page
   nextPage() {
-    console.log(`[Clock] 🔁 Wechsel zu Page ${this.currentPage + 1}`);
+    console.log(`[Clock] Wechsel zu Page ${this.currentPage}`);
     this.showPage((this.currentPage + 1) % this.totalPages);
   }
 

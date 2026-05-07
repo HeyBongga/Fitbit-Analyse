@@ -60,7 +60,7 @@ datenLogger.addSensor(gyroscopeSensor);
 datenLogger.addSensor(heartRateSensor);
 datenLogger.addSensor(orientationSensor);
 
-console.log("Alle Sensoren beim Logger registriert");
+console.log("✅[APP] Alle Sensoren beim Logger registriert");
 /////////////////////////////////////////////////////////////////////////
 // Messung Start/Stop und Datenverwaltung
 let sendDataInterval = null;
@@ -68,7 +68,6 @@ let sendDataInterval = null;
 appClock.onRecordingChange((isRecording) => {
   if (isRecording) {
     // ✅ MESSUNG STARTET
-    console.log("[App] 🔴 Messung startet...");
     datenLogger.startRecording();
     
     // Starte Timer: Sende Daten alle 60 Sekunden an Companion
@@ -83,14 +82,13 @@ appClock.onRecordingChange((isRecording) => {
           dataCount: dataToSend.dataCount,
           data: dataToSend.data
         });
-        console.log(`[App] ✅ Daten versendet an Companion`);
+        console.log(`⬆️[App] Sende ${datenLogger.getAllLogs().length} Datenpunkte an Companion...`);
+        datenLogger.clearLogs(); // Optional: Logs nach Versand löschen, um Speicher zu sparen
       }
-    }, 1000); // Alle 60 Sekunden
+    }, 1000); // Alle ... Sekunden
     
   } else {
-    // ⏹️ MESSUNG STOPPT
-    //console.log("[App] ⏹️ Messung stoppt...");
-    
+    // ⏹️ MESSUNG STOPPT    
     // Stoppe den Timer
     if (sendDataInterval) {
       clearInterval(sendDataInterval);
@@ -109,6 +107,7 @@ appClock.onRecordingChange((isRecording) => {
         data: recording.data
       });
       console.log(`[App] ✅ Finale Messung versendet an Companion`);
+      datenLogger.clearLogs(); // Optional: Logs nach Versand löschen
     }
   }
 });
