@@ -1,6 +1,6 @@
 import { BodyPresenceSensor } from "body-presence";
-import { logPrototypeChain } from "../debug/prototype";
 import { BaseSensor } from "./BaseSensor";
+import { formatTime } from "../utils/format";
 
 export class BodyPresenceSensorWrapper extends BaseSensor {
   constructor() {
@@ -22,11 +22,12 @@ export class BodyPresenceSensorWrapper extends BaseSensor {
   }
 
   init(labelElement) {
-    labelElement.text = "NaN";
+    labelElement.value.text = "NaN";
 
     this.hardware.addEventListener("reading", () => {
       this.updateValue({ value: this.hardware.present ? "on-wrist" : "off-wrist" });
-      labelElement.text = this.hardware.present ? "Body present: Yes" : "Body present: No";
+      labelElement.value.text = this.hardware.present ? "Body present: Yes" : "Body present: No";
+      labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
       // Emittiere Event für Logger
       this.emit("myreading");
     });

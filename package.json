@@ -4,12 +4,12 @@
   "private": true,
   "license": "UNLICENSED",
   "devDependencies": {
-    "@fitbit/sdk": "~6.1.0",
-    "@fitbit/sdk-cli": "^1.7.3"
+    "@fitbit/sdk": "^7.2.0-pre.0",
+    "@fitbit/sdk-cli": "^1.8.0-pre.11"
   },
   "fitbit": {
     "appUUID": "3cd1b631-41e8-4dfd-a513-6efb7ab8bef3",
-    "appType": "clockface",
+    "appType": "app",
     "appDisplayName": "Fitbit Analyse",
     "iconFile": "resources/icon.png",
     "wipeColor": "#ffffff",
@@ -24,8 +24,7 @@
       "access_sleep"
     ],
     "buildTargets": [
-      "atlas",
-      "vulcan"
+      "rhea"
     ],
     "i18n": {},
     "defaultLanguage": "en-US"
@@ -33,5 +32,6 @@
   "scripts": {
     "build": "fitbit-build",
     "debug": "fitbit"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

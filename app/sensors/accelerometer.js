@@ -25,7 +25,7 @@ export class AccelerometerSensor extends BaseSensor {
    * Gibt alle Accelerometer-Werte als String zurück (für Debugging)
    */
   getValues() {
-    return `${this.sensorName}: x=${this.hardware.x}, y=${this.hardware.y}, z=${this.hardware.z} [${this.timestamp}]`;
+    return `${this.sensorName}: x=${this.hardware.x}, y=${this.hardware.y}, z=${this.hardware.z} @[${this.timestamp}]`;
   }
 
   init(labelElement) {
@@ -40,7 +40,7 @@ export class AccelerometerSensor extends BaseSensor {
           labelElement.value.text = "ACC: x: NaN, y: NaN, z: NaN";
         } else {
           this.updateValue({ value: { x: this.hardware.x, y: this.hardware.y, z: this.hardware.z } });
-          labelElement.value.text = `ACC: x: ${this.hardware.x}, y: ${this.hardware.y}, z: ${this.hardware.z} \n @ ${formatTime(Date.now())}`;
+          labelElement.value.text = `ACC: x: ${this.hardware.x.toFixed(2)}, y: ${this.hardware.y.toFixed(2)}, z: ${this.hardware.z.toFixed(2)}`;
           labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
           // Emittiere Event für Logger
           this.emit("myreading");

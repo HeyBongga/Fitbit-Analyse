@@ -12,6 +12,16 @@ Dieses Projekt analysiert und verarbeitet Fitbit-Daten zur Auswertung von Gesund
 ## Anforderungen
 
 - Fitbit SDK
+    [//"@fitbit/sdk": "~6.1.0",
+    //"@fitbit/sdk-cli": "^1.7.3"] kein Sideloading möglich
+
+    //"@fitbit/sdk": "~7.1.0-pre.0",
+    //"@fitbit/sdk-cli": "~1.8.0-pre.10"
+
+    //"@fitbit/sdk": "^7.2.0-pre.0",
+    //"@fitbit/sdk-cli": "^1.8.0-pre.11"
+
+    deviceTarget: "rhea"
 
 ## Kontakt
 

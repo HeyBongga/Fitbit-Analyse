@@ -6,8 +6,13 @@ import { BaseSensor } from "./BaseSensor";
 export class OrientationSensorWrapper extends BaseSensor {
   constructor() {
     super("Orientation");
-    this.hardware = new OrientationSensor({ frequency: 1 });
-    this.isSupported = !!OrientationSensor;
+    this.isSupported = typeof OrientationSensor !== "undefined";
+
+    if (this.isSupported) {
+      this.hardware = new OrientationSensor({ frequency: 1 });
+    } else {
+      this.hardware = null;
+    }
   }
 
   getValue() {
@@ -35,7 +40,7 @@ export class OrientationSensorWrapper extends BaseSensor {
     if (this.isSupported) {
       //console.log("This device has an Orientation sensor!");
 
-      labelElement.value.text = "ORIENTATION: q0: NaN, q1: NaN, q2: NaN, q3: NaN";
+      labelElement.value.text = "Orientation: q0: NaN, q1: NaN, q2: NaN, q3: NaN";
       labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
 
       this.hardware.addEventListener("reading", () => {
@@ -52,7 +57,7 @@ export class OrientationSensorWrapper extends BaseSensor {
           `Orientation Reading: timestamp=${this.hardware.timestamp}, [${this.hardware.quaternion[0]}, ${this.hardware.quaternion[1]}, ${this.hardware.quaternion[2]}, ${this.hardware.quaternion[3]}]`
         );
 
-        labelElement.value.text = `ORIENTATION: q0: ${this.hardware.quaternion[0]}, q1: ${this.hardware.quaternion[1]}, q2: ${this.hardware.quaternion[2]}, q3: ${this.hardware.quaternion[3]}`;
+        labelElement.value.text = `Orientation: q0: ${this.hardware.quaternion[0]}, q1: ${this.hardware.quaternion[1]}, q2: ${this.hardware.quaternion[2]}, q3: ${this.hardware.quaternion[3]}`;
         labelElement.timestamp.text = `@ ${formatTime(this.hardware.timestamp)}`;
         // Emittiere Event für Logger
         this.emit("myreading");
@@ -65,7 +70,7 @@ export class OrientationSensorWrapper extends BaseSensor {
       this.hardware.start();
     } else {
       console.log("❌This device does NOT have an Orientation sensor!");
-      labelElement.value.text = "ORIENTATION: Not supported";
+      labelElement.value.text = "Orientation: Not supported!";
     }
   }
 }

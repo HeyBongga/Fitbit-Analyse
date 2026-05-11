@@ -18,7 +18,9 @@ const bg = document.getElementById("background");
 const clockLabel = document.getElementById("clockLabel");
 const toggleBtn = document.getElementById("toggleBtn");
 const toggleBtnText = document.getElementById("toggleBtnText");
+const batteryLabel = document.getElementById("batteryLabel");
 const bodyPresenceLabel = document.getElementById("bodyPresenceLabel");
+const bodyPresenceTimestamp = document.getElementById("bodyPresenceTimestamp");
 const hrLabel1 = document.getElementById("hrLabel1");
 const hrLabel2 = document.getElementById("hrLabel2");
 const accLabel1 = document.getElementById("accLabel1");
@@ -43,22 +45,22 @@ appClock.setPages([
 ]);
 appClock.attachEventListeners();
 //////////////////////////////////////////////////////////////////////////
-initBodyPresence(bodyPresenceLabel);
+initBodyPresence({value: bodyPresenceLabel, timestamp: bodyPresenceTimestamp});
 initHeartRate({value: hrLabel1,timestamp: hrLabel2});
-initAccelerometer({value: accLabel1,timestamp: accLabel2});
+//initAccelerometer({value: accLabel1,timestamp: accLabel2});
 initGyroscope({value: gyroLabel1,timestamp: gyroLabel2});
 initOrientation({value: orientationLabel1,timestamp: orientationLabel2});
 initSleep({value: sleepLabel1,timestamp: sleepLabel2});
 initActivity({value: activityLabel1,timestamp: activityLabel2});
 initProfile({value: profileLabel,timestamp: null});
-initPower();
+initPower({value: batteryLabel,timestamp: null});
 /////////////////////////////////////////////////////////////////////////
 // Registriere alle Sensoren beim Logger
-datenLogger.addSensor(bodyPresenceSensor);
-datenLogger.addSensor(accelerometerSensor);
-datenLogger.addSensor(gyroscopeSensor);
 datenLogger.addSensor(heartRateSensor);
-datenLogger.addSensor(orientationSensor);
+datenLogger.addSensor(bodyPresenceSensor);
+//datenLogger.addSensor(accelerometerSensor);
+//datenLogger.addSensor(gyroscopeSensor);
+//datenLogger.addSensor(orientationSensor);
 
 console.log("✅[APP] Alle Sensoren beim Logger registriert");
 /////////////////////////////////////////////////////////////////////////
@@ -75,6 +77,7 @@ appClock.onRecordingChange((isRecording) => {
       const dataToSend = datenLogger.sendCurrentData();
       
       if (dataToSend && messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+        console.log(JSON.stringify(dataToSend).length);
         messaging.peerSocket.send({
           type: "measurement_data",
           action: "data_update",
@@ -99,6 +102,7 @@ appClock.onRecordingChange((isRecording) => {
     const recording = datenLogger.stopRecording();
     
     if (recording && messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+      console.log(JSON.stringify(recording).length);
       messaging.peerSocket.send({
         type: "measurement_complete",
         action: "recording_stopped",
