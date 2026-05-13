@@ -1,5 +1,6 @@
 import * as document from "document";
 import * as messaging from "messaging";
+
 import { Clock } from "./clock";
 import { initBodyPresence, bodyPresenceSensor } from "./sensors/bodypresence";
 import { initHeartRate, heartRateSensor } from "./sensors/heartrate";
@@ -34,6 +35,15 @@ const sleepLabel2 = document.getElementById("sleepLabel2");
 const activityLabel1 = document.getElementById("activityLabel1");
 const activityLabel2 = document.getElementById("activityLabel2");
 const profileLabel = document.getElementById("profileLabel");
+
+const loggerlabels = [
+  document.getElementById("loggerLabel1"),
+  document.getElementById("loggerLabel2"),
+  document.getElementById("loggerLabel3"),
+  document.getElementById("loggerLabel4"),
+  document.getElementById("loggerLabel5")
+];
+
 /////////////////////////////////////////////////////////////////////////
 // Initialize the clock and sensors with the respective label elements
 const appClock = new Clock(clockLabel, bg, toggleBtn, toggleBtnText);
@@ -47,7 +57,7 @@ appClock.attachEventListeners();
 //////////////////////////////////////////////////////////////////////////
 initBodyPresence({value: bodyPresenceLabel, timestamp: bodyPresenceTimestamp});
 initHeartRate({value: hrLabel1,timestamp: hrLabel2});
-//initAccelerometer({value: accLabel1,timestamp: accLabel2});
+initAccelerometer({value: accLabel1,timestamp: accLabel2});
 initGyroscope({value: gyroLabel1,timestamp: gyroLabel2});
 initOrientation({value: orientationLabel1,timestamp: orientationLabel2});
 initSleep({value: sleepLabel1,timestamp: sleepLabel2});
@@ -58,7 +68,7 @@ initPower({value: batteryLabel,timestamp: null});
 // Registriere alle Sensoren beim Logger
 datenLogger.addSensor(heartRateSensor);
 datenLogger.addSensor(bodyPresenceSensor);
-//datenLogger.addSensor(accelerometerSensor);
+datenLogger.addSensor(accelerometerSensor);
 //datenLogger.addSensor(gyroscopeSensor);
 //datenLogger.addSensor(orientationSensor);
 
@@ -107,12 +117,31 @@ appClock.onRecordingChange((isRecording) => {
         type: "measurement_complete",
         action: "recording_stopped",
         timestamp: recording.endTime,
+        duration: recording.duration,
         dataCount: recording.dataCount,
         data: recording.data
       });
+      const index = recording.index-1;
+      if(loggerlabels[index]) {
+        loggerlabels[index].text = `Messung ${recording.index}: ${recording.duration}`;
+      }
+
       console.log(`[App] ✅ Finale Messung versendet an Companion`);
       datenLogger.clearLogs(); // Optional: Logs nach Versand löschen
     }
   }
 });
+
+// messaging.peerSocket.onmessage = (evt) => {
+//   console.log("⬇️[App] Nachricht vom Companion erhalten");
+
+//   const data = evt.data;
+
+//   if (!data || data.type !== "upload_status") {
+//     return;
+//   }
+//   if(loggerlabels[data.index]) {
+//     loggerlabels[data.index].text = data.text;
+//   }
+// }
 /////////////////////////////////////////////////////////////////////////

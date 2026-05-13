@@ -25,3 +25,10 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Fitbit CLI log files (created when connecting devices)
+log*.txt
+logs/
+
+# ServerURL 
+config.js

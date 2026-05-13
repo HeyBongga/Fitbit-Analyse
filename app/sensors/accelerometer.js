@@ -25,21 +25,29 @@ export class AccelerometerSensor extends BaseSensor {
    * Gibt alle Accelerometer-Werte als String zurück (für Debugging)
    */
   getValues() {
-    return `${this.sensorName}: x=${this.hardware.x}, y=${this.hardware.y}, z=${this.hardware.z} @[${this.timestamp}]`;
+    return `${this.sensorName}: x=${this.hardware.x.toFixed(2)}, y=${this.hardware.y.toFixed(2)}, z=${this.hardware.z.toFixed(2)} @[${this.timestamp}]`;
   }
 
   init(labelElement) {
     if (this.isSupported) {
       //console.log("This device has an Accelerometer!");
+      this.lastupdate = 0;
 
       labelElement.value.text = "ACC: x: NaN, y: NaN, z: NaN";
       labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
 
       this.hardware.addEventListener("reading", () => {
+        const now = Date.now();
         if (this.hardware.x === undefined || this.hardware.y === undefined || this.hardware.z === undefined) {
           labelElement.value.text = "ACC: x: NaN, y: NaN, z: NaN";
         } else {
-          this.updateValue({ value: { x: this.hardware.x, y: this.hardware.y, z: this.hardware.z } });
+          if (now - this.lastupdate < 1000) {
+            labelElement.value.text = `ACC: x: ${this.hardware.x.toFixed(2)}, y: ${this.hardware.y.toFixed(2)}, z: ${this.hardware.z.toFixed(2)}`;
+            labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
+            return; // Ignoriere Updates, die schneller als 1 Sekunde kommen
+          }
+          this.lastupdate = now;
+          this.updateValue({ value: { x: this.hardware.x.toFixed(2), y: this.hardware.y.toFixed(2), z: this.hardware.z.toFixed(2) } });
           labelElement.value.text = `ACC: x: ${this.hardware.x.toFixed(2)}, y: ${this.hardware.y.toFixed(2)}, z: ${this.hardware.z.toFixed(2)}`;
           labelElement.timestamp.text = `@ ${formatTime(Date.now())}`;
           // Emittiere Event für Logger

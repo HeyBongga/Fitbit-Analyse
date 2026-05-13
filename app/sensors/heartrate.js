@@ -6,7 +6,7 @@ import { BaseSensor } from "./BaseSensor";
 export class HeartRateSensorWrapper extends BaseSensor {
   constructor() {
     super("HeartRate");
-    this.hardware = new HeartRateSensor({ frequency: 1 });
+    this.hardware = new HeartRateSensor({ frequency: 10 });
     this.bodySensor = new BodyPresenceSensor();
   }
 

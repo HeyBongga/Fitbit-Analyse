@@ -4,29 +4,59 @@ class DatenLogger {
     this.sensors = [];
     this.isRecording = false;
     this.recordingStartTime = null;
+    this.recordingEndTime = null;
     this.sendInterval = null;
+    this.index = 0;
   }
 
   //Startet die Messung - Logging aktivieren
   startRecording() {
     this.isRecording = true;
-    this.recordingStartTime = new Date().toISOString();
+    this.recordingStartTime = new Date();
     this.logs = []; // Alte Daten löschen
     console.log("[Logger] ▶️ Messung startet...");
-    //console.log(`🔴 [Logger] Recording gestartet um ${this.recordingStartTime}`);
   }
 
   //Stoppt die Messung - Logging deaktivieren
   stopRecording() {
     this.isRecording = false;
+    this.recordingEndTime = new Date();
     console.log("[Logger] ⏹️ Messung stoppt...");
-    //console.log(`⏹️ [Logger] Recording gestoppt. ${this.logs.length} Datenpunkte gesammelt.`);
+    this.index++;
     return {
+      index: this.index,
       startTime: this.recordingStartTime,
-      endTime: new Date().toISOString(),
+      endTime: this.recordingEndTime,
+      duration: this.getRecordingDuration(),
       dataCount: this.logs.length,
       data: [...this.logs]
     };
+  }
+
+  getRecordingDuration() {
+    if (this.recordingStartTime && this.recordingEndTime) {
+      const durationMs = this.recordingEndTime - this.recordingStartTime;
+      //Umrechnung
+      const totalSeconds = Math.floor(durationMs / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const remainingSeconds = totalSeconds % 60;
+
+      // Schöner String
+      let durationText = "";
+
+      if (hours > 0) {
+        durationText += `${hours}h `;
+      }
+
+      if (minutes > 0 || hours > 0) {
+        durationText += `${minutes}min `;
+      }
+
+      durationText += `${remainingSeconds}sek`;
+
+    }
+    return durationText.trim();
   }
 
   // Gibt den aktuellen Recording-Status zurück
@@ -41,9 +71,9 @@ class DatenLogger {
     }
     
     const dataToSend = {
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
       dataCount: this.logs.length,
-      data: [...this.logs]
+      data: [...this.logs] 
     };
     
     return dataToSend;
@@ -75,7 +105,7 @@ class DatenLogger {
     const entry = {
       sensorName: sensorName,
       sensorValue: sensorValue,
-      timestamp: timestamp || new Date().toISOString()
+      timestamp: timestamp || new Date()
     };
     this.logs.push(entry);
   }

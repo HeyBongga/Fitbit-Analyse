@@ -31,6 +31,13 @@
 
   <!-- Seite 2: Messungen -->
   <g id="page2" visibility="hidden" pointer-events="none">
+    <text id="loggerLabel1" class="defaultText" y="30%"/>
+    <text id="loggerLabel2" class="defaultText" y="35%"/>
+    <text id="loggerLabel3" class="defaultText" y="40%"/>
+    <text id="loggerLabel4" class="defaultText" y="45%"/>
+    <text id="loggerLabel5" class="defaultText" y="50%"/>
+    
+
     <rect id="toggleBtn" x="25%" y="70%" width="50%" height="15%" fill="lightblue" rx="5" ry="5" pointer-events="all"/>
     <text id="toggleBtnText" x="50%" y="80%" text-anchor="middle" text-length="20" class="defaultText">START</text>
   </g>
